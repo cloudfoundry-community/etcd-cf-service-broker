@@ -7,9 +7,9 @@ import (
 	"os"
 	"strconv"
 
+	"code.cloudfoundry.org/lager"
 	"github.com/cloudfoundry-community/etcd-cf-service-broker/broker"
-	"github.com/frodenas/brokerapi"
-	"github.com/pivotal-golang/lager"
+	"github.com/pivotal-cf/brokerapi"
 )
 
 func main() {

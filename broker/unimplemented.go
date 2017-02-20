@@ -1,38 +1,42 @@
 package broker
 
-import "github.com/frodenas/brokerapi"
+import (
+	"context"
+
+	"github.com/pivotal-cf/brokerapi"
+)
 
 // Provision a new service instance
-func (bkr *Broker) Provision(instanceID string, details brokerapi.ProvisionDetails, acceptsIncomplete bool) (resp brokerapi.ProvisioningResponse, async bool, err error) {
-	return brokerapi.ProvisioningResponse{}, false, nil
+func (bkr *Broker) Provision(context context.Context, instanceID string, details brokerapi.ProvisionDetails, asyncAllowed bool) (resp brokerapi.ProvisionedServiceSpec, err error) {
+	return brokerapi.ProvisionedServiceSpec{}, nil
 }
 
-// Update service instance
-func (bkr *Broker) Update(instanceID string, updateDetails brokerapi.UpdateDetails, acceptsIncomplete bool) (async bool, err error) {
-	return false, nil
+// Deprovision service instance
+func (bkr *Broker) Deprovision(context context.Context, instanceID string, details brokerapi.DeprovisionDetails, asyncAllowed bool) (resp brokerapi.DeprovisionServiceSpec, err error) {
+	return brokerapi.DeprovisionServiceSpec{}, nil
 }
 
 // Bind returns access credentials for a service instance
-func (bkr *Broker) Bind(instanceID string, bindingID string, details brokerapi.BindDetails) (brokerapi.BindingResponse, error) {
-	return brokerapi.BindingResponse{
+func (bkr *Broker) Bind(context context.Context, instanceID string, bindingID string, details brokerapi.BindDetails) (brokerapi.Binding, error) {
+	return brokerapi.Binding{
 		Credentials: map[string]interface{}{},
 	}, nil
 }
 
 // Unbind to remove access to service instance
-func (bkr *Broker) Unbind(instanceID string, bindingID string, details brokerapi.UnbindDetails) error {
+func (bkr *Broker) Unbind(context context.Context, instanceID string, bindingID string, details brokerapi.UnbindDetails) error {
 	return nil
 }
 
-// Deprovision service instance
-func (bkr *Broker) Deprovision(instanceID string, details brokerapi.DeprovisionDetails, acceptsIncomplete bool) (async bool, err error) {
-	return false, nil
+// Update service instance
+func (bkr *Broker) Update(context context.Context, instanceID string, updateDetails brokerapi.UpdateDetails, asyncAllowed bool) (resp brokerapi.UpdateServiceSpec, err error) {
+	return brokerapi.UpdateServiceSpec{}, nil
 }
 
 // LastOperation returns the status of the last operation on a service instance
-func (bkr *Broker) LastOperation(instanceID string) (resp brokerapi.LastOperationResponse, err error) {
-	return brokerapi.LastOperationResponse{
-		State:       brokerapi.LastOperationSucceeded,
+func (bkr *Broker) LastOperation(context context.Context, instanceID string, operationData string) (resp brokerapi.LastOperation, err error) {
+	return brokerapi.LastOperation{
+		State:       brokerapi.Succeeded,
 		Description: "Succeeded",
 	}, nil
 }

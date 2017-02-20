@@ -1,6 +1,6 @@
 package broker
 
-import "github.com/pivotal-golang/lager"
+import "code.cloudfoundry.org/lager"
 
 // Broker holds config for Etcd service broker API endpoints
 type Broker struct {

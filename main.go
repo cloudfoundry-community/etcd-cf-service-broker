@@ -38,7 +38,7 @@ func run() {
 	}
 	port, err := strconv.Atoi(portStr)
 	if err != nil {
-		logger.Fatal("port", err, lager.Data{"PORT": portStr, "message": "$PORT must be an integer"})
+		fmt.Fprintf(os.Stderr, "$PORT must be an integer, was '%s'\n", portStr)
 	}
 
 	bkr, _ := broker.NewBroker(logger)

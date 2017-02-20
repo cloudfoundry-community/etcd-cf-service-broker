@@ -1,0 +1,33 @@
+{
+  "services": [
+    {
+      "id": "5b0ad2fe-f7c0-11e6-8e76-7fc33eaeccd4",
+      "name": "etcd",
+      "description": "Etcd as a service",
+      "bindable": true,
+      "metadata": {
+        "displayname": "displayname",
+        "longdescription": "Distributed reliable key-value store for the most critical data of a distributed system",
+        "providerdisplayname": "Stark & Wayne",
+        "supporturl": "https://github.com/cloudfoundry-community/etcd-cf-service-broker/issues"
+      },
+      "plans": [
+        {
+          "id": "5bcfa502-f7c0-11e6-bd06-e323138af97b",
+          "name": "shared",
+          "description": "Shared slice of etcd cluster",
+          "metadata": {
+            "bullets": ["etcd v2"],
+            "displayname": "Shared"
+          }
+        }
+      ],
+      "planupdateable": true,
+      "tags": [
+        "etcd",
+        "etcd2",
+        "keyvalue"
+      ]
+    }
+  ]
+}

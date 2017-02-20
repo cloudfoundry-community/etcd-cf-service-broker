@@ -2,11 +2,6 @@ package broker
 
 import "github.com/frodenas/brokerapi"
 
-// Services is the catalog of services offered by the broker
-func (bkr *Broker) Services() brokerapi.CatalogResponse {
-	return brokerapi.CatalogResponse{}
-}
-
 // Provision a new service instance
 func (bkr *Broker) Provision(instanceID string, details brokerapi.ProvisionDetails, acceptsIncomplete bool) (resp brokerapi.ProvisioningResponse, async bool, err error) {
 	return brokerapi.ProvisioningResponse{}, false, nil

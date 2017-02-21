@@ -1,0 +1,37 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "wCsiss685AkJbnF/E0PcP4o1vLQ=",
+			"path": "code.cloudfoundry.org/lager",
+			"revision": "e95b952e262dcdb521c8b029ba15853f59292726",
+			"revisionTime": "2017-02-06T19:16:45Z"
+		},
+		{
+			"checksumSHA1": "iIUYZyoanCQQTUaWsu8b+iOSPt4=",
+			"path": "github.com/gorilla/context",
+			"revision": "1ea25387ff6f684839d82767c1733ff4d4d15d0a",
+			"revisionTime": "2016-02-26T21:46:23Z"
+		},
+		{
+			"checksumSHA1": "F5dR3/i70EhSIMZfeIV+H8/PtvM=",
+			"path": "github.com/gorilla/mux",
+			"revision": "94e7d24fd285520f3d12ae998f7fdd6b5393d453",
+			"revisionTime": "2017-02-17T19:26:16Z"
+		},
+		{
+			"checksumSHA1": "77CFiZOBYxPgRiUNN0cr2O1KpVA=",
+			"path": "github.com/pivotal-cf/brokerapi",
+			"revision": "3ece34833940f3e0fc884ed73e35216907499529",
+			"revisionTime": "2017-02-13T08:23:38Z"
+		},
+		{
+			"checksumSHA1": "4yHEcDRxN5sqr5UDFs3qr0B4lwA=",
+			"path": "github.com/pivotal-cf/brokerapi/auth",
+			"revision": "3ece34833940f3e0fc884ed73e35216907499529",
+			"revisionTime": "2017-02-13T08:23:38Z"
+		}
+	],
+	"rootPath": "github.com/cloudfoundry-community/etcd-cf-service-broker"
+}

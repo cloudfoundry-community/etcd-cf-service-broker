@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -e -u
+
+catalog=$(curl -s ${BROKER_URI:?required}/v2/catalog)
+service_id=$(echo $catalog | jq -r ".services[0].id")
+plan_id=$(echo $catalog | jq -r ".services[0].plans[0].id")
+
+instance_id=etcd-$(date +"%s" | rev)
+binding_id=bind-$(date +"%s" | rev)
+
+info() {
+  echo "$@ " >&2
+}
+
+create_instance() {
+  set +x
+  info creating service instance ${instance_id} for plan ${plan_id}
+  set -x
+  curl ${BROKER_URI}/v2/service_instances/${instance_id} \
+       -XPUT \
+       -d "{\"service_id\":\"${service_id}\",\"plan_id\":\"${plan_id}\"}" \
+       >&2 || {
+    echo "Couldn't create service instance"
+    exit 1
+  }
+}
+
+create_binding() {
+  set +x
+  info creating binding ${binding_id} for instance ${instance_id}
+  set -x
+  curl -sf ${BROKER_URI}/v2/service_instances/${instance_id}/service_bindings/${binding_id} \
+    -XPUT \
+    -d "{\"service_id\": \"${service_id}\", \"plan_id\": \"${plan_id}\"}" || {
+    echo "Couldn't create instance binding"
+    exit 1
+  }
+}
+
+create_instance
+credentials=$(create_binding)
+set +x
+
+echo $credentials | jq .
+
+uri=$(echo $credentials | jq -r ".credentials.uri")
+if [[ "${uri}X" == "X" || "${uri}" == "null" ]]; then
+  echo "Binding credentials missing 'uri' key"
+  exit 1
+fi

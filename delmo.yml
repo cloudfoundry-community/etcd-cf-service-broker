@@ -6,7 +6,10 @@ suite:
 tests:
 - name: provision-read-write
   spec:
-  - exec: [show-catalog]
+  - exec:
+    # - show-catalog
+    - provision-bind-use
 
 tasks:
 - {name: show-catalog, command: "/tasks/show-catalog"}
+- {name: provision-bind-use, command: "/tasks/provision-bind-use"}

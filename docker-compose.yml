@@ -11,7 +11,10 @@ services:
       BROKER_USERNAME: broker
       BROKER_PASSWORD: password
       ETCD_URI: "http://root:password@${DOCKER_HOST_IP}:4001"
-    command: [etcd-cf-service-broker]
+      ETCD_HOST: http://${DOCKER_HOST_IP}:4001
+      ETCD_USERNAME: root
+      ETCD_PASSWORD: password
+    command: [/scripts/start_broker.sh]
     depends_on: [etcd]
   etcd:
     container_name: etcd
@@ -34,10 +37,5 @@ services:
       DOCKER_HOST_IP:
       BROKER_URI: "http://broker:password@${DOCKER_HOST_IP}:6000"
       ETCD_URI: "http://root:password@${DOCKER_HOST_IP}:4001"
-      ETCD_HOST: ${DOCKER_HOST_IP}
-      ETCD_PORT: 4001
-      ETCD_PROTOCOL: http
-      ETCD_USERNAME: root
-      ETCD_PASSWORD: password
     command: [/tasks/show-catalog]
     depends_on: [etcd,etcd-cf-service-broker]

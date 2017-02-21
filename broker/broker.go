@@ -25,6 +25,10 @@ func NewBroker(logger lager.Logger) (bkr *Broker, err error) {
 	return
 }
 
+func (bkr *Broker) etcdBaseURL() string {
+	return bkr.EtcdClient.Endpoints()[0]
+}
+
 func (bkr *Broker) setupEtcdClient() {
 	etcdURI := os.Getenv("ETCD_URI")
 	if etcdURI == "" {

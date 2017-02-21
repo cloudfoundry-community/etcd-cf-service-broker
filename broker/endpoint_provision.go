@@ -19,7 +19,9 @@ import (
 // 4. Assign role to user
 func (bkr *Broker) Provision(ctx context.Context, instanceID string, details brokerapi.ProvisionDetails, asyncAllowed bool) (resp brokerapi.ProvisionedServiceSpec, err error) {
 	roleName := bkr.serviceInstanceRole(instanceID)
-	rolePaths := bkr.serviceInstancePaths(instanceID)
+	rolePaths := []string{
+		fmt.Sprintf("%s/*", bkr.serviceInstancePath(instanceID)),
+	}
 
 	authRoleAPI := etcdclient.NewAuthRoleAPI(bkr.EtcdClient)
 	err = authRoleAPI.AddRole(ctx, roleName)
@@ -38,9 +40,9 @@ func (bkr *Broker) Provision(ctx context.Context, instanceID string, details bro
 }
 
 func (bkr *Broker) serviceInstanceRole(instanceID string) string {
-	return fmt.Sprintf("instance_%s", instanceID)
+	return fmt.Sprintf("instance-%s", instanceID)
 }
 
-func (bkr *Broker) serviceInstancePaths(instanceID string) []string {
-	return []string{fmt.Sprintf("/service_instances/%s/*", instanceID)}
+func (bkr *Broker) serviceInstancePath(instanceID string) string {
+	return fmt.Sprintf("/service_instances/%s", instanceID)
 }

@@ -50,5 +50,15 @@ if [[ "${uri}X" == "X" || "${uri}" == "null" ]]; then
   exit 1
 fi
 
-# TODO: test read/write access to subpath provided
+echo Setting value
+curl $uri/hello -XPUT -d 'value=world'
+
+echo Getting value
+curl $uri/hello
+value=$(curl -s $uri/hello | jq -r .node.value)
+if [[ "${value}" != "world" ]]; then
+  echo "Value retrived from $uri/hello should be 'world', was '${value}'"
+  exit 1
+fi
+
 # TODO: create another service; test that first has no access to second; and vice versa

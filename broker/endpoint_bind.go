@@ -49,7 +49,7 @@ func (bkr *Broker) Bind(ctx context.Context, instanceID string, bindingID string
 	}
 	fmt.Printf("Created user %v\n", user)
 
-	basePath := bkr.serviceInstancePath(instanceID)
+	basePath := fmt.Sprintf("/v2/keys%s", bkr.serviceInstancePath(instanceID))
 	serviceInstanceURL := fmt.Sprintf("%s%s", bkr.etcdBaseURL(), basePath)
 	u, err := url.Parse(serviceInstanceURL)
 	if err != nil {

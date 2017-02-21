@@ -22,6 +22,19 @@ Bound applications/service keys will receive credentials that look similar to:
 }
 ```
 
+## Deployment
+
+The broker is a Golang application that can be deployed to Cloud Foundry.
+
+It requires the following environment variables:
+
+* `ETCD_URI` - full URI including basic auth for a user with `root` auth permissions (to create other users/roles)
+
+Optional env vars:
+
+* `BROKER_USERNAME` and `BROKER_USERNAME` to configure the service broker's basic auth (both default to `broker`)
+* `PORT` is the port to which the application will bind for incoming HTTP requests (defaults to `6000`)
+
 ## Development
 
 If any new files or changes are made to `data/` directory, then need to run `go-bindata` to update `assets/bindata.go`:

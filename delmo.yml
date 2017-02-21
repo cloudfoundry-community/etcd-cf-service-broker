@@ -7,7 +7,7 @@ tests:
 - name: provision-read-write
   spec:
   - exec:
-    # - show-catalog
+    - show-catalog
     - provision-bind-use
 
 tasks:

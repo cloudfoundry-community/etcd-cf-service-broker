@@ -17,6 +17,9 @@ RUN set -x \
     && curl -L https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64 -o /usr/local/bin/spruce \
     && chmod +x /usr/local/bin/spruce
 
+EXPOSE 6000
+ENTRYPOINT ["etcd-cf-service-broker"]
+
 COPY . /go/src/github.com/cloudfoundry-community/etcd-cf-service-broker
 RUN set -x \
     && go install github.com/cloudfoundry-community/etcd-cf-service-broker

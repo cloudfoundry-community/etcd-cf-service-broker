@@ -42,7 +42,7 @@ delete_binding() {
   set +x
   info deleting binding ${binding_id} for instance ${instance_id}
   set -x
-  curl -sf -XDELETE \
+  curl -f -XDELETE \
     ${BROKER_URI}/v2/service_instances/${instance_id}/service_bindings/${binding_id}\?service_id=${service_id}\&plan_id=${plan_id} || {
     echo "Couldn't delete instance binding"
     exit 1
@@ -54,7 +54,7 @@ delete_instance() {
   set +x
   info deleting instance ${instance_id}
   set -x
-  curl -sf -XDELETE \
+  curl -f -XDELETE \
     ${BROKER_URI}/v2/service_instances/${instance_id}\?service_id=${service_id}\&plan_id=${plan_id} || {
     echo "Couldn't delete instance"
     exit 1

@@ -1,5 +1,16 @@
 #!/bin/bash
 
-set -e -u -x
+set -e -u
 
+set -x
 curl -s ${BROKER_URI:?required}/v2/catalog
+set +x
+
+catalog=$(curl -s ${BROKER_URI:?required}/v2/catalog)
+service_id=$(echo $catalog| jq -r ".services[0].id")
+service_name=$(echo $catalog| jq -r ".services[0].name")
+plan_id=$(echo $catalog| jq -r ".services[0].plans[0].id")
+plan_name=$(echo $catalog| jq -r ".services[0].plans[0].name")
+
+echo Found service $service_name / $service_id
+echo Found plan $plan_name / $plan_id

@@ -47,6 +47,19 @@ delete_binding() {
     echo "Couldn't delete instance binding"
     exit 1
   }
+  set +x
+}
+
+delete_instance() {
+  set +x
+  info deleting instance ${instance_id}
+  set -x
+  curl -sf -XDELETE \
+    ${BROKER_URI}/v2/service_instances/${instance_id}\?service_id=${service_id}\&plan_id=${plan_id} || {
+    echo "Couldn't delete instance"
+    exit 1
+  }
+  set +x
 }
 
 create_instance
@@ -75,6 +88,7 @@ fi
 host=$(echo $credentials | jq -r ".credentials.host")
 username=$(echo $credentials | jq -r ".credentials.username")
 password=$(echo $credentials | jq -r ".credentials.password")
+base_path=$(echo $credentials | jq -r ".credentials.base_path")
 
 error_code=$(curl -s -u ${username}:${password} ${host}/v2/keys/not-allowed -XPUT -d 'value=try-this' | jq -r .errorCode)
 if [[ "${error_code}" != "110" ]]; then
@@ -113,5 +127,15 @@ curl $uri/hello
 value=$(curl -s $uri/hello | jq -r .node.value)
 if [[ "${value}" != "world" ]]; then
   echo "Value retrived from $uri/hello should be 'world', was '${value}'"
+  exit 1
+fi
+
+delete_binding
+delete_instance
+
+echo "User's /hello should now be deleted"
+missing_value=$(curl -s ${ETCD_URI:?required}${base_path}/hello | jq -r .node.value)
+if [[ "${missing_value}" != "null" ]]; then
+  echo "Expecting that all data within ${base_path} has been deleted"
   exit 1
 fi

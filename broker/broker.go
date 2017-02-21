@@ -46,6 +46,7 @@ func (bkr *Broker) setupEtcdClient() {
 		Username:  user.Username(),
 		Password:  password,
 	}
+	ctx := context.Background()
 
 	c, err := etcdclient.New(cfg)
 	if err != nil {
@@ -54,12 +55,23 @@ func (bkr *Broker) setupEtcdClient() {
 	}
 	bkr.EtcdClient = c
 
-	fmt.Println("Test credentials by listing member nodes...")
-	m := etcdclient.NewMembersAPI(c)
-	nodes, err := m.List(context.Background())
+	etcdclient.EnablecURLDebug()
+
+	fmt.Println("List existing auth users...")
+	authUserAPI := etcdclient.NewAuthUserAPI(bkr.EtcdClient)
+	users, err := authUserAPI.ListUsers(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to access etcd server: %s\n", err)
+		fmt.Fprintf(os.Stderr, "Failed to get existing auth users: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("%#v\n\n", nodes)
+	fmt.Printf("%#v\n\n", users)
+
+	fmt.Println("List existing auth roles...")
+	authRoleAPI := etcdclient.NewAuthRoleAPI(bkr.EtcdClient)
+	roles, err := authRoleAPI.ListRoles(ctx)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to get existing auth roles: %s\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("%#v\n\n", roles)
 }

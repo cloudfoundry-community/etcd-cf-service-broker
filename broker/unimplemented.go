@@ -6,11 +6,6 @@ import (
 	"github.com/pivotal-cf/brokerapi"
 )
 
-// Provision a new service instance
-func (bkr *Broker) Provision(context context.Context, instanceID string, details brokerapi.ProvisionDetails, asyncAllowed bool) (resp brokerapi.ProvisionedServiceSpec, err error) {
-	return brokerapi.ProvisionedServiceSpec{}, nil
-}
-
 // Deprovision service instance
 func (bkr *Broker) Deprovision(context context.Context, instanceID string, details brokerapi.DeprovisionDetails, asyncAllowed bool) (resp brokerapi.DeprovisionServiceSpec, err error) {
 	return brokerapi.DeprovisionServiceSpec{}, nil

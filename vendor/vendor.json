@@ -9,6 +9,36 @@
 			"revisionTime": "2017-02-06T19:16:45Z"
 		},
 		{
+			"checksumSHA1": "Zgqp9pp3G4cSZbepa6tzhNeHZOI=",
+			"path": "github.com/coreos/etcd/client",
+			"revision": "2533c2a50c4b6114ad6fd4c0000175fac3b6ee06",
+			"revisionTime": "2017-02-17T23:51:47Z"
+		},
+		{
+			"checksumSHA1": "mKIXx1kDwmVmdIpZ3pJtRBuUKso=",
+			"path": "github.com/coreos/etcd/pkg/pathutil",
+			"revision": "2533c2a50c4b6114ad6fd4c0000175fac3b6ee06",
+			"revisionTime": "2017-02-17T23:51:47Z"
+		},
+		{
+			"checksumSHA1": "gx1gJIMU6T0UNQ0bPZ/drQ8cpCI=",
+			"path": "github.com/coreos/etcd/pkg/types",
+			"revision": "2533c2a50c4b6114ad6fd4c0000175fac3b6ee06",
+			"revisionTime": "2017-02-17T23:51:47Z"
+		},
+		{
+			"checksumSHA1": "sp2FkEyaIGiQFOEZCTDkBZgyHOs=",
+			"path": "github.com/coreos/etcd/version",
+			"revision": "2533c2a50c4b6114ad6fd4c0000175fac3b6ee06",
+			"revisionTime": "2017-02-17T23:51:47Z"
+		},
+		{
+			"checksumSHA1": "nux9tCYmTA5bOCVODF3Rqzcu60U=",
+			"path": "github.com/coreos/go-semver/semver",
+			"revision": "5e3acbb5668c4c3deb4842615c4098eb61fb6b1e",
+			"revisionTime": "2017-02-09T20:17:57Z"
+		},
+		{
 			"checksumSHA1": "F5dR3/i70EhSIMZfeIV+H8/PtvM=",
 			"path": "github.com/gorilla/mux",
 			"revision": "94e7d24fd285520f3d12ae998f7fdd6b5393d453",
@@ -25,6 +55,18 @@
 			"path": "github.com/pivotal-cf/brokerapi/auth",
 			"revision": "3ece34833940f3e0fc884ed73e35216907499529",
 			"revisionTime": "2017-02-13T08:23:38Z"
+		},
+		{
+			"checksumSHA1": "ImlfEQlXLepC8f2Ba/JLodjYULs=",
+			"path": "github.com/ugorji/go/codec",
+			"revision": "03b46f3d7a8e0457836a5ecd906b4961a5815a63",
+			"revisionTime": "2016-02-21T00:14:30Z"
+		},
+		{
+			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"path": "golang.org/x/net/context",
+			"revision": "6b27048ae5e6ad1ef927e72e437531493de612fe",
+			"revisionTime": "2017-02-17T08:49:01Z"
 		}
 	],
 	"rootPath": "github.com/cloudfoundry-community/etcd-cf-service-broker"

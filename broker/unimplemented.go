@@ -11,11 +11,6 @@ func (bkr *Broker) Deprovision(ctx context.Context, instanceID string, details b
 	return brokerapi.DeprovisionServiceSpec{}, nil
 }
 
-// Unbind to remove access to service instance
-func (bkr *Broker) Unbind(ctx context.Context, instanceID string, bindingID string, details brokerapi.UnbindDetails) error {
-	return nil
-}
-
 // Update service instance
 func (bkr *Broker) Update(ctx context.Context, instanceID string, updateDetails brokerapi.UpdateDetails, asyncAllowed bool) (resp brokerapi.UpdateServiceSpec, err error) {
 	return brokerapi.UpdateServiceSpec{}, nil

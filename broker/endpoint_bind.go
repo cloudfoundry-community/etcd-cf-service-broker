@@ -33,7 +33,7 @@ type EtcdCredentials struct {
 // 4. Assign the service instance role to user
 func (bkr *Broker) Bind(ctx context.Context, instanceID string, bindingID string, details brokerapi.BindDetails) (binding brokerapi.Binding, err error) {
 	authUserAPI := etcdclient.NewAuthUserAPI(bkr.EtcdClient)
-	username := fmt.Sprintf("user-%s", bindingID)
+	username := bkr.serviceBindingUser(bindingID)
 	password := utils.NewPassword(10)
 	err = authUserAPI.AddUser(ctx, username, password)
 	if err != nil {
@@ -68,4 +68,8 @@ func (bkr *Broker) Bind(ctx context.Context, instanceID string, bindingID string
 	return brokerapi.Binding{
 		Credentials: creds,
 	}, nil
+}
+
+func (bkr *Broker) serviceBindingUser(bindingID string) string {
+	return fmt.Sprintf("user-%s", bindingID)
 }

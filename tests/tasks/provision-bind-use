@@ -38,11 +38,22 @@ create_binding() {
   }
 }
 
+delete_binding() {
+  set +x
+  info deleting binding ${binding_id} for instance ${instance_id}
+  set -x
+  curl -sf -XDELETE \
+    ${BROKER_URI}/v2/service_instances/${instance_id}/service_bindings/${binding_id}\?service_id=${service_id}\&plan_id=${plan_id} || {
+    echo "Couldn't delete instance binding"
+    exit 1
+  }
+}
+
 create_instance
 credentials=$(create_binding)
 set +x
 
-echo $credentials | jq .
+echo $credentials | jq -r .
 
 uri=$(echo $credentials | jq -r ".credentials.uri")
 if [[ "${uri}X" == "X" || "${uri}" == "null" ]]; then
@@ -61,4 +72,46 @@ if [[ "${value}" != "world" ]]; then
   exit 1
 fi
 
-# TODO: create another service; test that first has no access to second; and vice versa
+host=$(echo $credentials | jq -r ".credentials.host")
+username=$(echo $credentials | jq -r ".credentials.username")
+password=$(echo $credentials | jq -r ".credentials.password")
+
+error_code=$(curl -s -u ${username}:${password} ${host}/v2/keys/not-allowed -XPUT -d 'value=try-this' | jq -r .errorCode)
+if [[ "${error_code}" != "110" ]]; then
+  echo "Expected errorCode 110 as shouldn't be allowed to access /not-allowed; got '${error_code}'"
+  exit 1
+fi
+
+delete_binding
+set +x
+echo "access to /hello should now be denied"
+
+error_code=$(curl -s $uri/hello | jq -r .errorCode)
+if [[ "${error_code}" != "110" ]]; then
+  echo "Expected errorCode 110 as shouldn't be allowed to access /hello anymore; got '${error_code}'"
+  exit 1
+fi
+
+echo "creating new binding, with same binding ID"
+old_password=$password
+credentials=$(create_binding)
+echo $credentials | jq -r .
+
+uri=$(echo $credentials | jq -r ".credentials.uri")
+if [[ "${uri}X" == "X" || "${uri}" == "null" ]]; then
+  echo "Binding credentials missing 'uri' key"
+  exit 1
+fi
+password=$(echo $credentials | jq -r ".credentials.password")
+if [[ "${password}" == "${old_password}" ]]; then
+  echo "Expecting new binding to have new password"
+  exit 1
+fi
+
+echo "Getting value /hello again"
+curl $uri/hello
+value=$(curl -s $uri/hello | jq -r .node.value)
+if [[ "${value}" != "world" ]]; then
+  echo "Value retrived from $uri/hello should be 'world', was '${value}'"
+  exit 1
+fi

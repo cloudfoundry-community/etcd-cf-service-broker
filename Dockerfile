@@ -1,9 +1,9 @@
-FROM alpine:3.4
+FROM alpine:3.5
 
 ENV GOPATH /go
 ENV PATH /go/bin:$PATH
 
-RUN apk add --no-cache --update curl bash sed jq go git
+RUN apk add --no-cache --update gcc g++ curl bash sed jq go git
 
 ENV ETCD_VERSION=2.3.7
 RUN set -x \

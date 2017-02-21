@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -x -u
+
+curl -XDELETE "${ETCD_URI:?required}/v2/keys/service/${PATRONI_SCOPE}?dir=true&recursive=true"

@@ -12,7 +12,7 @@ RUN set -x \
       && mv /tmp/etcd-v${ETCD_VERSION}-linux-amd64/etcdctl /usr/local/bin \
       && rm -rf /tmp/etcd*
 
-ENV SPRUCE_VERSION=1.8.1
+ENV SPRUCE_VERSION=1.8.10
 RUN set -x \
     && curl -L https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64 -o /usr/local/bin/spruce \
     && chmod +x /usr/local/bin/spruce

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e -u -x
+
+curl -s ${BROKER_URI:?required}/v2/catalog

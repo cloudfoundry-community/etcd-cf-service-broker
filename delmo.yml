@@ -1,0 +1,12 @@
+suite:
+  name: etcd-cf-service-broker
+  system: docker-compose.yml
+  task_service: tests
+
+tests:
+- name: provision-read-write
+  spec:
+  - exec: [show-catalog]
+
+tasks:
+- {name: show-catalog, command: "/tasks/show-catalog"}

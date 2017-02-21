@@ -35,6 +35,12 @@ Optional env vars:
 * `BROKER_USERNAME` and `BROKER_USERNAME` to configure the service broker's basic auth (both default to `broker`)
 * `PORT` is the port to which the application will bind for incoming HTTP requests (defaults to `6000`)
 
+## Performance
+
+There is a performance hit to etcd when you use this service broker on your etcd cluster. It was discovered by the compose.io team that etcd with auth enabled is slower for every request due to the use of `bcrypt` within etcd.
+
+https://www.compose.com/articles/the-mystery-of-etcds-rationed-requests/
+
 ## Development
 
 If any new files or changes are made to `data/` directory, then need to run `go-bindata` to update `assets/bindata.go`:

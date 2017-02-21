@@ -18,7 +18,7 @@ RUN set -x \
     && chmod +x /usr/local/bin/spruce
 
 EXPOSE 6000
-ENTRYPOINT ["etcd-cf-service-broker"]
+CMD ["etcd-cf-service-broker"]
 
 COPY . /go/src/github.com/cloudfoundry-community/etcd-cf-service-broker
 RUN set -x \

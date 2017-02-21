@@ -45,6 +45,12 @@
 			"revisionTime": "2017-02-17T19:26:16Z"
 		},
 		{
+			"checksumSHA1": "cdOCt0Yb+hdErz8NAQqayxPmRsY=",
+			"path": "github.com/hashicorp/errwrap",
+			"revision": "7554cd9344cec97297fa6649b055a8c98c2a1e55",
+			"revisionTime": "2014-10-28T05:47:10Z"
+		},
+		{
 			"checksumSHA1": "77CFiZOBYxPgRiUNN0cr2O1KpVA=",
 			"path": "github.com/pivotal-cf/brokerapi",
 			"revision": "3ece34833940f3e0fc884ed73e35216907499529",

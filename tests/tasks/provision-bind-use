@@ -49,3 +49,6 @@ if [[ "${uri}X" == "X" || "${uri}" == "null" ]]; then
   echo "Binding credentials missing 'uri' key"
   exit 1
 fi
+
+# TODO: test read/write access to subpath provided
+# TODO: create another service; test that first has no access to second; and vice versa

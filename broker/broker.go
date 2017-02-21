@@ -57,7 +57,14 @@ func (bkr *Broker) setupEtcdClient() {
 
 	etcdclient.EnablecURLDebug()
 
-	fmt.Println("List existing auth users...")
+	fmt.Println("\nEnabling auth, if not already enabled...")
+	authAPI := etcdclient.NewAuthAPI(bkr.EtcdClient)
+	err = authAPI.Enable(ctx)
+	if err != nil {
+		fmt.Printf("%s... continuing...\n", err)
+	}
+
+	fmt.Println("\nList existing auth users...")
 	authUserAPI := etcdclient.NewAuthUserAPI(bkr.EtcdClient)
 	users, err := authUserAPI.ListUsers(ctx)
 	if err != nil {
@@ -66,7 +73,7 @@ func (bkr *Broker) setupEtcdClient() {
 	}
 	fmt.Printf("%#v\n\n", users)
 
-	fmt.Println("List existing auth roles...")
+	fmt.Println("\nList existing auth roles...")
 	authRoleAPI := etcdclient.NewAuthRoleAPI(bkr.EtcdClient)
 	roles, err := authRoleAPI.ListRoles(ctx)
 	if err != nil {

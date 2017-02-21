@@ -37,7 +37,7 @@ Optional env vars:
 
 ## Performance
 
-There is a performance hit to etcd when you use this service broker on your etcd cluster. It was discovered by the compose.io team that etcd with auth enabled is slower for every request due to the use of `bcrypt` within etcd.
+There is a performance hit to etcd when you enable etcd auth to use this service broker on your etcd cluster. It was discovered by the compose.io team that etcd with auth enabled is slower for every request due to the use of `bcrypt` within etcd.
 
 https://www.compose.com/articles/the-mystery-of-etcds-rationed-requests/
 

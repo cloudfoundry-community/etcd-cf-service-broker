@@ -1,0 +1,7 @@
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+.envrc
+credentials.yml

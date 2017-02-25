@@ -13,11 +13,11 @@ Bound applications/service keys will receive credentials that look similar to:
 ```json
 {
   "credentials": {
+    "uri": "http://user-8c0d5822-f806-11e6-84f6-a79e3c5fe739:WVmH8Qr365@23.159.100.202:4001",
+    "keypath": "/service_instances/92122d42-f806-11e6-bcb2-4b77b9de2108",
     "host": "http://23.159.100.202:4001",
     "username": "user-8c0d5822-f806-11e6-84f6-a79e3c5fe739",
-    "password": "WVmH8Qr365",
-    "base_path": "/v2/keys/service_instances/92122d42-f806-11e6-bcb2-4b77b9de2108",
-    "uri": "http://user-8c0d5822-f806-11e6-84f6-a79e3c5fe739:WVmH8Qr365@23.159.100.202:4001/v2/keys/service_instances/92122d42-f806-11e6-bcb2-4b77b9de2108"
+    "password": "WVmH8Qr365"
   }
 }
 ```

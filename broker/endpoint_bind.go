@@ -17,7 +17,7 @@ type EtcdCredentials struct {
 	Host     string `json:"host"`
 	Username string `json:"username"`
 	Password string `json:"password"`
-	BasePath string `json:"base_path"`
+	KeyPath  string `json:"keypath"`
 	URI      string `json:"uri"`
 }
 
@@ -49,21 +49,20 @@ func (bkr *Broker) Bind(ctx context.Context, instanceID string, bindingID string
 	}
 	fmt.Printf("Created user %v\n", user)
 
-	basePath := fmt.Sprintf("/v2/keys%s", bkr.serviceInstancePath(instanceID))
-	serviceInstanceURL := fmt.Sprintf("%s%s", bkr.etcdBaseURL(), basePath)
-	u, err := url.Parse(serviceInstanceURL)
+	u, err := url.Parse(bkr.etcdBaseURL())
 	if err != nil {
-		err = errwrap.Wrapf(fmt.Sprintf("Could not parse URL %s: {{err}}", serviceInstanceURL), err)
+		err = errwrap.Wrapf(fmt.Sprintf("Could not parse URL %s: {{err}}", bkr.etcdBaseURL()), err)
 		return
 	}
-	uri := fmt.Sprintf("%s://%s:%s@%s%s", u.Scheme, username, password, u.Host, u.Path)
+	uri := fmt.Sprintf("%s://%s:%s@%s", u.Scheme, username, password, u.Host)
+	keyPath := bkr.serviceInstanceKeyPath(instanceID)
 
 	creds := EtcdCredentials{
 		URI:      uri,
 		Host:     bkr.etcdBaseURL(),
 		Username: username,
 		Password: password,
-		BasePath: basePath,
+		KeyPath:  keyPath,
 	}
 	return brokerapi.Binding{
 		Credentials: creds,

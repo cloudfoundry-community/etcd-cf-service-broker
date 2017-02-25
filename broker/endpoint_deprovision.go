@@ -25,7 +25,7 @@ func (bkr *Broker) Deprovision(ctx context.Context, instanceID string, details b
 		Recursive: true,
 		Dir:       true,
 	}
-	deletePath := bkr.serviceInstancePath(instanceID)
+	deletePath := bkr.serviceInstanceKeyPath(instanceID)
 	_, err = keysAPI.Delete(ctx, deletePath, deleteOpts)
 	if err != nil {
 		err = errwrap.Wrapf(fmt.Sprintf("Could not recursive delete '%s': {{err}}", deletePath), err)

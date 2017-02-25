@@ -20,7 +20,7 @@ import (
 func (bkr *Broker) Provision(ctx context.Context, instanceID string, details brokerapi.ProvisionDetails, asyncAllowed bool) (resp brokerapi.ProvisionedServiceSpec, err error) {
 	roleName := bkr.serviceInstanceRole(instanceID)
 	rolePaths := []string{
-		fmt.Sprintf("%s/*", bkr.serviceInstancePath(instanceID)),
+		fmt.Sprintf("%s/*", bkr.serviceInstanceKeyPath(instanceID)),
 	}
 
 	authRoleAPI := etcdclient.NewAuthRoleAPI(bkr.EtcdClient)
@@ -43,6 +43,6 @@ func (bkr *Broker) serviceInstanceRole(instanceID string) string {
 	return fmt.Sprintf("instance-%s", instanceID)
 }
 
-func (bkr *Broker) serviceInstancePath(instanceID string) string {
+func (bkr *Broker) serviceInstanceKeyPath(instanceID string) string {
 	return fmt.Sprintf("/service_instances/%s", instanceID)
 }

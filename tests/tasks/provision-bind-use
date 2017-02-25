@@ -73,24 +73,39 @@ if [[ "${uri}X" == "X" || "${uri}" == "null" ]]; then
   echo "Binding credentials missing 'uri' key"
   exit 1
 fi
+keypath=$(echo $credentials | jq -r ".credentials.keypath")
+if [[ "${keypath}X" == "X" || "${keypath}" == "null" ]]; then
+  echo "Binding credentials missing 'keypath' key"
+  exit 1
+fi
+password=$(echo $credentials | jq -r ".credentials.password")
+if [[ "${password}X" == "X" || "${password}" == "null" ]]; then
+  echo "Binding credentials missing 'password' key"
+  exit 1
+fi
+username=$(echo $credentials | jq -r ".credentials.username")
+if [[ "${username}X" == "X" || "${username}" == "null" ]]; then
+  echo "Binding credentials missing 'username' key"
+  exit 1
+fi
+host=$(echo $credentials | jq -r ".credentials.host")
+if [[ "${host}X" == "X" || "${host}" == "null" ]]; then
+  echo "Binding credentials missing 'host' key"
+  exit 1
+fi
 
 echo Setting value
-curl $uri/hello -XPUT -d 'value=world'
+curl $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
 
 echo Getting value
-curl $uri/hello
-value=$(curl -s $uri/hello | jq -r .node.value)
+curl $uri/v2/keys${keypath}/hello
+value=$(curl -s $uri/v2/keys${keypath}/hello | jq -r .node.value)
 if [[ "${value}" != "world" ]]; then
   echo "Value retrived from $uri/hello should be 'world', was '${value}'"
   exit 1
 fi
 
-host=$(echo $credentials | jq -r ".credentials.host")
-username=$(echo $credentials | jq -r ".credentials.username")
-password=$(echo $credentials | jq -r ".credentials.password")
-base_path=$(echo $credentials | jq -r ".credentials.base_path")
-
-error_code=$(curl -s -u ${username}:${password} ${host}/v2/keys/not-allowed -XPUT -d 'value=try-this' | jq -r .errorCode)
+error_code=$(curl -s ${uri}/v2/keys/not-allowed -XPUT -d 'value=try-this' | jq -r .errorCode)
 if [[ "${error_code}" != "110" ]]; then
   echo "Expected errorCode 110 as shouldn't be allowed to access /not-allowed; got '${error_code}'"
   exit 1
@@ -100,7 +115,7 @@ delete_binding
 set +x
 echo "access to /hello should now be denied"
 
-error_code=$(curl -s $uri/hello | jq -r .errorCode)
+error_code=$(curl -s $uri/v2/keys${keypath}/hello | jq -r .errorCode)
 if [[ "${error_code}" != "110" ]]; then
   echo "Expected errorCode 110 as shouldn't be allowed to access /hello anymore; got '${error_code}'"
   exit 1
@@ -108,6 +123,7 @@ fi
 
 echo "creating new binding, with same binding ID"
 old_password=$password
+old_keypath=$keypath
 credentials=$(create_binding)
 echo $credentials | jq -r .
 
@@ -116,17 +132,23 @@ if [[ "${uri}X" == "X" || "${uri}" == "null" ]]; then
   echo "Binding credentials missing 'uri' key"
   exit 1
 fi
+
 password=$(echo $credentials | jq -r ".credentials.password")
 if [[ "${password}" == "${old_password}" ]]; then
   echo "Expecting new binding to have new password"
   exit 1
 fi
+keypath=$(echo $credentials | jq -r ".credentials.keypath")
+if [[ "${keypath}" != "${old_keypath}" ]]; then
+  echo "Expecting new binding to have same password; was '${old_keypath}', now '${keypath}'"
+  exit 1
+fi
 
 echo "Getting value /hello again"
-curl $uri/hello
-value=$(curl -s $uri/hello | jq -r .node.value)
+curl curl -s $uri/v2/keys${keypath}/hello
+value=$(curl -s curl -s $uri/v2/keys${keypath}/hello | jq -r .node.value)
 if [[ "${value}" != "world" ]]; then
-  echo "Value retrived from $uri/hello should be 'world', was '${value}'"
+  echo "Value retrived from curl -s $uri/v2/keys${keypath}/hello should be 'world', was '${value}'"
   exit 1
 fi
 
@@ -134,7 +156,7 @@ delete_binding
 delete_instance
 
 echo "User's /hello should now be deleted"
-missing_value=$(curl -s ${ETCD_URI:?required}${base_path}/hello | jq -r .node.value)
+missing_value=$(curl -s ${ETCD_URI:?required}/v2/keys${keypath}/hello | jq -r .node.value)
 if [[ "${missing_value}" != "null" ]]; then
   echo "Expecting that all data within ${base_path} has been deleted"
   exit 1

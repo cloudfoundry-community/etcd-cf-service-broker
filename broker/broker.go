@@ -72,17 +72,17 @@ func (bkr *Broker) setupEtcdClient() {
 	authUserAPI := etcdclient.NewAuthUserAPI(bkr.EtcdClient)
 	users, err := authUserAPI.ListUsers(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to get existing auth users: %s\n", err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "Old etcd warning: Failed to get existing auth users: %s\n", err)
+	} else {
+		fmt.Printf("%#v\n\n", users)
 	}
-	fmt.Printf("%#v\n\n", users)
 
 	fmt.Println("\nList existing auth roles...")
 	authRoleAPI := etcdclient.NewAuthRoleAPI(bkr.EtcdClient)
 	roles, err := authRoleAPI.ListRoles(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Failed to get existing auth roles: %s\n", err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "Old etcd warning: Failed to get existing auth roles: %s\n", err)
+	} else {
+		fmt.Printf("%#v\n\n", roles)
 	}
-	fmt.Printf("%#v\n\n", roles)
 }

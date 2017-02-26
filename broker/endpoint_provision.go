@@ -18,6 +18,8 @@ import (
 // 3. Create user
 // 4. Assign role to user
 func (bkr *Broker) Provision(ctx context.Context, instanceID string, details brokerapi.ProvisionDetails, asyncAllowed bool) (resp brokerapi.ProvisionedServiceSpec, err error) {
+	// TODO: create the directory; fail provision if it already exists
+
 	roleName := bkr.serviceInstanceRole(instanceID)
 	rolePaths := []string{
 		fmt.Sprintf("%s/*", bkr.serviceInstanceKeyPath(instanceID)),

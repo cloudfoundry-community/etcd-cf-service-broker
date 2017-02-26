@@ -94,6 +94,13 @@ if [[ "${host}X" == "X" || "${host}" == "null" ]]; then
   exit 1
 fi
 
+echo Inspect users
+curl -s ${ETCD_URI:?required}/v2/auth/users | jq .
+curl -s ${ETCD_URI:?required}/v2/auth/users/user-${binding_id} | jq .
+echo Inspect roles
+curl -s ${ETCD_URI:?required}/v2/auth/roles | jq .
+curl -s ${ETCD_URI:?required}/v2/auth/roles/instance-${instance_id} | jq .
+
 echo Setting value
 curl $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
 
@@ -105,20 +112,32 @@ if [[ "${value}" != "world" ]]; then
   exit 1
 fi
 
-error_code=$(curl -s ${uri}/v2/keys/not-allowed -XPUT -d 'value=try-this' | jq -r .errorCode)
-if [[ "${error_code}" != "110" ]]; then
-  echo "Expected errorCode 110 as shouldn't be allowed to access /not-allowed; got '${error_code}'"
-  exit 1
+curl ${uri}/v2/keys/not-allowed -XPUT -d 'value=try-this'
+if [[ "${ETCD_VERSION:-2.3}" != "2.2" ]]; then
+  error_code=$(curl -s ${uri}/v2/keys/not-allowed -XPUT -d 'value=try-this' | jq -r .errorCode)
+  if [[ "${error_code}" != "110" ]]; then
+    echo "Expected errorCode 110 as shouldn't be allowed to access /not-allowed; got '${error_code}'"
+    exit 1
+  fi
+  echo "Confirming that /not_allowed was not modified by user"
+  not_allowed=$(curl -s ${ETCD_URI:?required}/v2/keys/not-allowed | jq -r .node.value)
+  if [[ "${not_allowed}" != "null" ]]; then
+    echo "Should not have allowed /not_allowed to be set"
+    exit 1
+  fi
 fi
 
 delete_binding
 set +x
 echo "access to /hello should now be denied"
 
-error_code=$(curl -s $uri/v2/keys${keypath}/hello | jq -r .errorCode)
-if [[ "${error_code}" != "110" ]]; then
-  echo "Expected errorCode 110 as shouldn't be allowed to access /hello anymore; got '${error_code}'"
-  exit 1
+curl $uri/v2/keys${keypath}/hello
+if [[ "${ETCD_VERSION:-2.3}" != "2.2" ]]; then
+  error_code=$(curl -s $uri/v2/keys${keypath}/hello | jq -r .errorCode)
+  if [[ "${error_code}" != "110" ]]; then
+    echo "Expected errorCode 110 as shouldn't be allowed to access /hello anymore; got '${error_code}'"
+    exit 1
+  fi
 fi
 
 echo "creating new binding, with same binding ID"
@@ -145,7 +164,7 @@ if [[ "${keypath}" != "${old_keypath}" ]]; then
 fi
 
 echo "Getting value /hello again"
-curl curl -s $uri/v2/keys${keypath}/hello
+curl -s $uri/v2/keys${keypath}/hello
 value=$(curl -s curl -s $uri/v2/keys${keypath}/hello | jq -r .node.value)
 if [[ "${value}" != "world" ]]; then
   echo "Value retrived from curl -s $uri/v2/keys${keypath}/hello should be 'world', was '${value}'"

@@ -22,6 +22,7 @@ if [[ "${ETCD_PASSWORD}X" != "X" ]]; then
     fi
   fi
 
+  echo
   echo "Verifying crdentials..."
   curl -s -u ${ETCD_USERNAME:-root}:${ETCD_PASSWORD:?required} ${ETCD_HOST_PORT}/v2/auth/users
 else

@@ -2,6 +2,9 @@
 
 set -e -u
 
+: ${BROKER_URI:?required}
+: ${ETCD_URI:?required}
+
 catalog=$(curl -s ${BROKER_URI:?required}/v2/catalog)
 service_id=$(echo $catalog | jq -r ".services[0].id")
 plan_id=$(echo $catalog | jq -r ".services[0].plans[0].id")

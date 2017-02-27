@@ -2,11 +2,15 @@
 
 set -e -u
 
+# required
 : ${BROKER_URI:?required}
 : ${ETCD_URI:?required}
 : ${EXPECTED_ETCD_HOST:?required}
 
-catalog=$(curl -s ${BROKER_URI:?required}/v2/catalog)
+# config
+export timeout=${timeout:-3}
+
+catalog=$(curl -m${timeout} -s ${BROKER_URI:?required}/v2/catalog)
 service_id=$(echo $catalog | jq -r ".services[0].id")
 plan_id=$(echo $catalog | jq -r ".services[0].plans[0].id")
 
@@ -22,9 +26,10 @@ create_instance() {
   info creating service instance ${instance_id} for plan ${plan_id}
   set -x
   curl ${BROKER_URI}/v2/service_instances/${instance_id} \
-       -XPUT \
-       -d "{\"service_id\":\"${service_id}\",\"plan_id\":\"${plan_id}\"}" \
-       >&2 || {
+      -XPUT \
+      -m${timeout} \
+      -d "{\"service_id\":\"${service_id}\",\"plan_id\":\"${plan_id}\"}" \
+      >&2 || {
     echo "Couldn't create service instance"
     exit 1
   }
@@ -36,6 +41,7 @@ create_binding() {
   set -x
   curl -sf ${BROKER_URI}/v2/service_instances/${instance_id}/service_bindings/${binding_id} \
     -XPUT \
+    -m${timeout} \
     -d "{\"service_id\": \"${service_id}\", \"plan_id\": \"${plan_id}\"}" || {
     echo "Couldn't create instance binding"
     exit 1
@@ -46,7 +52,7 @@ delete_binding() {
   set +x
   info deleting binding ${binding_id} for instance ${instance_id}
   set -x
-  curl -f -XDELETE \
+  curl -f -XDELETE -m${timeout} \
     ${BROKER_URI}/v2/service_instances/${instance_id}/service_bindings/${binding_id}\?service_id=${service_id}\&plan_id=${plan_id} || {
     echo "Couldn't delete instance binding"
     exit 1
@@ -58,7 +64,7 @@ delete_instance() {
   set +x
   info deleting instance ${instance_id}
   set -x
-  curl -f -XDELETE \
+  curl -f -XDELETE -m${timeout} \
     ${BROKER_URI}/v2/service_instances/${instance_id}\?service_id=${service_id}\&plan_id=${plan_id} || {
     echo "Couldn't delete instance"
     exit 1
@@ -71,11 +77,11 @@ credentials=$(create_binding)
 set +x
 
 echo Inspect users
-curl -s ${ETCD_URI:?required}/v2/auth/users | jq .
-curl -s ${ETCD_URI:?required}/v2/auth/users/user-${binding_id} | jq .
+curl  -m${timeout} -s ${ETCD_URI:?required}/v2/auth/users | jq .
+curl  -m${timeout} -s ${ETCD_URI:?required}/v2/auth/users/user-${binding_id} | jq .
 echo Inspect roles
-curl -s ${ETCD_URI:?required}/v2/auth/roles | jq .
-curl -s ${ETCD_URI:?required}/v2/auth/roles/instance-${instance_id} | jq .
+curl  -m${timeout} -s ${ETCD_URI:?required}/v2/auth/roles | jq .
+curl  -m${timeout} -s ${ETCD_URI:?required}/v2/auth/roles/instance-${instance_id} | jq .
 
 echo $credentials | jq -r .
 

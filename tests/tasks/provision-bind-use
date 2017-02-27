@@ -10,6 +10,10 @@ set -e -u
 # config
 export timeout=${timeout:-3}
 
+echo Target etcd version
+curl ${ETCD_URI}/version
+echo; echo
+
 catalog=$(curl -m${timeout} -s ${BROKER_URI:?required}/v2/catalog)
 service_id=$(echo $catalog | jq -r ".services[0].id")
 plan_id=$(echo $catalog | jq -r ".services[0].plans[0].id")

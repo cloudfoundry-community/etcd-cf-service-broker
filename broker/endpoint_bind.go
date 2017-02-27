@@ -49,18 +49,18 @@ func (bkr *Broker) Bind(ctx context.Context, instanceID string, bindingID string
 	}
 	fmt.Printf("Created user %v\n", user)
 
-	u, err := url.Parse(bkr.etcdBaseURL())
+	bindingSimpleURL := bkr.PublicEtcdURL
+	if bindingSimpleURL == "" {
+		bindingSimpleURL = bkr.etcdBaseURL()
+	}
+
+	u, err := url.Parse(bindingSimpleURL)
 	if err != nil {
 		err = errwrap.Wrapf(fmt.Sprintf("Could not parse URL %s: {{err}}", bkr.etcdBaseURL()), err)
 		return
 	}
 	uri := fmt.Sprintf("%s://%s:%s@%s", u.Scheme, username, password, u.Host)
 	keyPath := bkr.serviceInstanceKeyPath(instanceID)
-
-	bindingSimpleURL := bkr.PublicEtcdURL
-	if bindingSimpleURL == "" {
-		bindingSimpleURL = bkr.etcdBaseURL()
-	}
 
 	creds := EtcdCredentials{
 		URI:      uri,

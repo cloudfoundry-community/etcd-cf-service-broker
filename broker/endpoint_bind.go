@@ -57,9 +57,14 @@ func (bkr *Broker) Bind(ctx context.Context, instanceID string, bindingID string
 	uri := fmt.Sprintf("%s://%s:%s@%s", u.Scheme, username, password, u.Host)
 	keyPath := bkr.serviceInstanceKeyPath(instanceID)
 
+	bindingSimpleURL := bkr.PublicEtcdURL
+	if bindingSimpleURL == "" {
+		bindingSimpleURL = bkr.etcdBaseURL()
+	}
+
 	creds := EtcdCredentials{
 		URI:      uri,
-		Host:     bkr.etcdBaseURL(),
+		Host:     bindingSimpleURL,
 		Username: username,
 		Password: password,
 		KeyPath:  keyPath,

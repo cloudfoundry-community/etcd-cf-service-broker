@@ -10,8 +10,9 @@ services:
       PORT: 6000
       BROKER_USERNAME: broker
       BROKER_PASSWORD: password
-      ETCD_URI: "http://root:password@${DOCKER_HOST_IP}:4001"
+      BROKER_PUBLIC_ETCD_URL: http://${DOCKER_HOST_IP}:4001
       ETCD_HOST: http://${DOCKER_HOST_IP}:4001
+      ETCD_URI: "http://root:password@${DOCKER_HOST_IP}:4001"
       ETCD_USERNAME: root
       ETCD_PASSWORD: password
     command: [/scripts/start_broker.sh]

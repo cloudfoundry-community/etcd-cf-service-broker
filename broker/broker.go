@@ -12,14 +12,16 @@ import (
 
 // Broker holds config for Etcd service broker API endpoints
 type Broker struct {
-	Logger     lager.Logger
-	EtcdClient etcdclient.Client
+	PublicEtcdURL string
+	Logger        lager.Logger
+	EtcdClient    etcdclient.Client
 }
 
 // NewBroker constructs Broker
 func NewBroker(logger lager.Logger) (bkr *Broker, err error) {
 	bkr = &Broker{
-		Logger: logger,
+		PublicEtcdURL: os.Getenv("BROKER_PUBLIC_ETCD_URL"),
+		Logger:        logger,
 	}
 	bkr.setupEtcdClient()
 	return

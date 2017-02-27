@@ -34,6 +34,26 @@ Optional env vars:
 
 * `BROKER_USERNAME` and `BROKER_USERNAME` to configure the service broker's basic auth (both default to `broker`)
 * `PORT` is the port to which the application will bind for incoming HTTP requests (defaults to `6000`)
+* `BROKER_PUBLIC_ETCD_URL` to provide a different public etcd URL than is used internally between the broker and etcd. For example:
+
+```
+export BROKER_PUBLIC_ETCD_URL=http://hub-etcd.dingotiles.com:4001
+```
+
+The resulting binding credentials will include this URL in `.credentials.host` and `.credentials.uri`:
+
+```json
+{
+  "credentials": {
+    "uri": "http://user-8c0d5822-f806-11e6-84f6-a79e3c5fe739:WVmH8Qr365@hub-etcd.dingotiles.com:4001",
+    "keypath": "/service_instances/92122d42-f806-11e6-bcb2-4b77b9de2108",
+    "host": "http://hub-etcd.dingotiles.com:4001",
+    "username": "user-8c0d5822-f806-11e6-84f6-a79e3c5fe739",
+    "password": "WVmH8Qr365"
+  }
+}
+```
+
 
 ## Performance
 

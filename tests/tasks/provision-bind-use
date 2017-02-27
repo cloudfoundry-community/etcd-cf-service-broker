@@ -4,6 +4,7 @@ set -e -u
 
 : ${BROKER_URI:?required}
 : ${ETCD_URI:?required}
+: ${EXPECTED_ETCD_HOST:?required}
 
 catalog=$(curl -s ${BROKER_URI:?required}/v2/catalog)
 service_id=$(echo $catalog | jq -r ".services[0].id")
@@ -69,40 +70,51 @@ create_instance
 credentials=$(create_binding)
 set +x
 
-echo $credentials | jq -r .
-
-uri=$(echo $credentials | jq -r ".credentials.uri")
-if [[ "${uri}X" == "X" || "${uri}" == "null" ]]; then
-  echo "Binding credentials missing 'uri' key"
-  exit 1
-fi
-keypath=$(echo $credentials | jq -r ".credentials.keypath")
-if [[ "${keypath}X" == "X" || "${keypath}" == "null" ]]; then
-  echo "Binding credentials missing 'keypath' key"
-  exit 1
-fi
-password=$(echo $credentials | jq -r ".credentials.password")
-if [[ "${password}X" == "X" || "${password}" == "null" ]]; then
-  echo "Binding credentials missing 'password' key"
-  exit 1
-fi
-username=$(echo $credentials | jq -r ".credentials.username")
-if [[ "${username}X" == "X" || "${username}" == "null" ]]; then
-  echo "Binding credentials missing 'username' key"
-  exit 1
-fi
-host=$(echo $credentials | jq -r ".credentials.host")
-if [[ "${host}X" == "X" || "${host}" == "null" ]]; then
-  echo "Binding credentials missing 'host' key"
-  exit 1
-fi
-
 echo Inspect users
 curl -s ${ETCD_URI:?required}/v2/auth/users | jq .
 curl -s ${ETCD_URI:?required}/v2/auth/users/user-${binding_id} | jq .
 echo Inspect roles
 curl -s ${ETCD_URI:?required}/v2/auth/roles | jq .
 curl -s ${ETCD_URI:?required}/v2/auth/roles/instance-${instance_id} | jq .
+
+echo $credentials | jq -r .
+
+errors=
+uri=$(echo $credentials | jq -r ".credentials.uri")
+if [[ "${uri}X" == "X" || "${uri}" == "null" ]]; then
+  echo "Binding credentials missing 'uri' key"
+  errors=1
+fi
+keypath=$(echo $credentials | jq -r ".credentials.keypath")
+if [[ "${keypath}X" == "X" || "${keypath}" == "null" ]]; then
+  echo "Binding credentials missing 'keypath' key"
+  errors=1
+fi
+password=$(echo $credentials | jq -r ".credentials.password")
+if [[ "${password}X" == "X" || "${password}" == "null" ]]; then
+  echo "Binding credentials missing 'password' key"
+  errors=1
+fi
+username=$(echo $credentials | jq -r ".credentials.username")
+if [[ "${username}X" == "X" || "${username}" == "null" ]]; then
+  echo "Binding credentials missing 'username' key"
+  errors=1
+fi
+host=$(echo $credentials | jq -r ".credentials.host")
+if [[ "${host}X" == "X" || "${host}" == "null" ]]; then
+  echo "Binding credentials missing 'host' key"
+  errors=1
+fi
+
+if [[ "${EXPECTED_ETCD_HOST}" != "${host}" ]]; then
+  echo "Expected host '$EXPECTED_ETCD_HOST' different from .credentials.host '${host}'"
+  errors=1
+fi
+
+if [[ "$errors" == "1" ]]; then
+  echo "Exiting due to preceding errors"
+  exit 1
+fi
 
 echo Setting value
 curl $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'

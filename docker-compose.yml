@@ -38,6 +38,7 @@ services:
       DOCKER_HOST_IP:
       BROKER_URI: "http://broker:password@${DOCKER_HOST_IP}:6000"
       ETCD_URI: "http://root:password@${DOCKER_HOST_IP}:4001"
+      EXPECTED_ETCD_HOST: "http://${DOCKER_HOST_IP}:4001"
       ETCD_VERSION: "2.3"
     command: [/tasks/show-catalog]
     depends_on: [etcd,etcd-cf-service-broker]

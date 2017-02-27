@@ -2,10 +2,11 @@
 
 set -e -u
 
-# required
-: ${BROKER_URI:?required}
-: ${ETCD_URI:?required}
-: ${EXPECTED_ETCD_HOST:?required}
+(
+echo Inputs
+echo BROKER_URI: ${BROKER_URI:?required}
+echo ETCD_URI: ${ETCD_URI:?required}
+echo EXPECTED_ETCD_HOST: ${EXPECTED_ETCD_HOST:?required}
 
 # config
 export timeout=${timeout:-3}
@@ -127,9 +128,12 @@ if [[ "$errors" == "1" ]]; then
 fi
 
 echo Setting value
+echo curl $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
+curl $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
 curl $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
 
 echo Getting value
+echo curl $uri/v2/keys${keypath}/hello
 curl $uri/v2/keys${keypath}/hello
 value=$(curl -s $uri/v2/keys${keypath}/hello | jq -r .node.value)
 if [[ "${value}" != "world" ]]; then
@@ -137,6 +141,8 @@ if [[ "${value}" != "world" ]]; then
   exit 1
 fi
 
+echo Setting to /not-allowed should not be allowed
+echo curl ${uri}/v2/keys/not-allowed -XPUT -d 'value=try-this'
 curl ${uri}/v2/keys/not-allowed -XPUT -d 'value=try-this'
 if [[ "${ETCD_VERSION:-2.3}" != "2.2" ]]; then
   error_code=$(curl -s ${uri}/v2/keys/not-allowed -XPUT -d 'value=try-this' | jq -r .errorCode)
@@ -205,3 +211,5 @@ if [[ "${missing_value}" != "null" ]]; then
   echo "Expecting that all data within ${base_path} has been deleted"
   exit 1
 fi
+
+) 2>&1

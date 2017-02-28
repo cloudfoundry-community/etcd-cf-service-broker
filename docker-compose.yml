@@ -4,7 +4,7 @@ services:
   etcd-cf-service-broker:
     container_name: etcd-cf-service-broker
     build: .
-    image: etcd-cf-service-broker
+    image: cfcommunity/etcd-cf-service-broker
     ports: ["6000:6000"]
     environment:
       PORT: 6000

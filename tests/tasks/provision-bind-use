@@ -128,14 +128,13 @@ if [[ "$errors" == "1" ]]; then
 fi
 
 echo Setting value
-echo curl $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
-curl $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
-curl $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
+echo curl -m${timeout} $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
+curl -m${timeout} $uri/v2/keys${keypath}/hello -XPUT -d 'value=world'
 
 echo Getting value
-echo curl $uri/v2/keys${keypath}/hello
-curl $uri/v2/keys${keypath}/hello
-value=$(curl -s $uri/v2/keys${keypath}/hello | jq -r .node.value)
+echo curl -m${timeout} $uri/v2/keys${keypath}/hello
+curl -m${timeout} $uri/v2/keys${keypath}/hello
+value=$(curl -s -m${timeout} $uri/v2/keys${keypath}/hello | jq -r .node.value)
 if [[ "${value}" != "world" ]]; then
   echo "Value retrived from $uri/hello should be 'world', was '${value}'"
   exit 1
